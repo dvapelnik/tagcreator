@@ -12,22 +12,30 @@
  * @returns {string} Constructed HTML tag with attributes and filling as string
  */
 function createTag(tag, attributes, filling) {
-    var html = '<' + tag;
-    for (var propName in attributes) {
-        switch (typeof attributes[propName]) {
+    'use strict';
+    var html = '<' + tag,
+        propName,
+        objectString = '',
+        objectFieldName;
+    for (propName in attributes) {
+        if (attributes.hasOwnProperty(propName)) {
+            switch (typeof attributes[propName]) {
             case 'string':
                 html += ' ' + propName + '="' + attributes[propName] + '"';
                 break;
             case 'object':
-                var objectString = '';
-                for (var objectFieldName in attributes[propName]) {
-                    objectString += objectFieldName + ': ' + attributes[propName][objectFieldName] + '; ';
+                for (objectFieldName in attributes[propName]) {
+                    if (attributes[propName].hasOwnProperty(objectFieldName)) {
+                        objectString += objectFieldName + ': ' + attributes[propName][objectFieldName] + '; ';
+                    }
                 }
                 html += ' ' + propName + '="' + objectString.replace(/(?:(?:^|\n)\s+|\s+(?:$|\n))/g, '') + '"';
                 break;
-            default :
+            default:
+            }
         }
+
     }
-    html += (filling == undefined) ? '/>' : '>' + filling + '</' + tag + '>';
+    html += (filling === undefined) ? '/>' : '>' + filling + '</' + tag + '>';
     return html;
 }
